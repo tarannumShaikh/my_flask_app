@@ -1,0 +1,54 @@
+pipeline {
+    agent any  // This means the pipeline can run on any available agent.
+
+    environment {
+        // You can set environment variables here if needed
+        VIRTUAL_ENV = 'venv'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the repository
+                git 'https://github.com/tarannumShaikh/my_flask_app' // Replace with your GitHub repo URL
+            }
+        }
+
+        stage('Set up Python Environment') {
+            steps {
+                script {
+                    // Create a virtual environment and install dependencies
+                    sh 'python -m venv $VIRTUAL_ENV'
+                    sh './$VIRTUAL_ENV/Scripts/pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Run your tests (if you have any)
+                    // You can use pytest, unittest, or any other testing framework
+                    sh './$VIRTUAL_ENV/Scripts/python -m pytest'  // Assuming you're using pytest
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Deploy or package the application (this is optional based on your app)
+                    // For now, just print a message.
+                    echo 'Deploying Flask app (optional step)'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up steps (optional)
+            echo 'Pipeline run finished! yay!'
+        }
+    }
+}
